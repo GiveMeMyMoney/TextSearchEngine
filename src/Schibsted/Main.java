@@ -1,19 +1,13 @@
 package Schibsted;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
-import java.util.function.Consumer;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.*;
 
 public class Main {
+
+    private static final String quitWord = ":quit";
+    private static final String searchWord = "search>";
+    private static final String noMatchesFoundWord = "No matches found";
 
     public static void main(String[] args) {
         if (args.length == 0) {
@@ -21,58 +15,81 @@ public class Main {
         }
 
         final File indexableDirectory = new File(args[0]);
-        //TODO: Index all files in indexableDirectory
-        //TODO getFilesWithContents();
+        Map<String, Set<String>> filesWithSplitedWords = Utils.getFilesNameWithUniqueContentWords(indexableDirectory);
 
         Scanner keyboard = new Scanner(System.in);
-
-
         while (true) {
-            System.out.print("search>");
+            System.out.print(searchWord);
             final String line = keyboard.nextLine();
-            //TODO: Search indexed files for words in line
+            if (quitWord.equals(line)) {
+                break;
+            }
+
+            Set<String> inputWordsToCompare = new HashSet<>(Arrays.asList(line.trim().split(Utils.splitWordsRegex)));
+            if (!line.isEmpty() && !inputWordsToCompare.isEmpty()) {
+                Map<String, Integer> fileNameRank = computeCompareInputWithFiles(filesWithSplitedWords, inputWordsToCompare);
+
+                if (fileNameRank.isEmpty()) {
+                    System.out.println(noMatchesFoundWord);
+                } else {
+                    printFinalResult(fileNameRank);
+                }
+            }
         }
-
-
     }
 
-    @FunctionalInterface
-    private interface CheckedFunction<T> {
-        void apply(T t) throws IOException;
+    //TODO rozbicie na klasy
+
+    static Map<String, Integer> computeCompareInputWithFiles(Map<String, Set<String>> filesWithWords, Set<String> inputWordsToCompare) {
+        Map<String, Integer> fileNameRank = new HashMap<>();
+
+        //TODO ogarnac co jest bardziej optymalne
+        filesWithWords.forEach((fileName, uniqueWords) -> {
+            System.out.println((fileName + ":\t" + uniqueWords));
+
+            int foundedWordsCount = 0;
+            for (String word : inputWordsToCompare) {
+                if (uniqueWords.contains(word)) {
+                    System.out.println("-- Found word: " + word);
+
+                    foundedWordsCount++;
+                }
+            }
+
+            if (foundedWordsCount > 0) {
+                int percentageOfContains = rankAlgorythm(foundedWordsCount, inputWordsToCompare.size());
+                fileNameRank.put(fileName, percentageOfContains);
+            }
+
+        });
+
+        return fileNameRank;
     }
 
-    private static <T> Consumer<T> throwingConsumerWrapper(CheckedFunction<T> throwingConsumer) {
-        return element -> {
+    private static void printFinalResult(Map<String, Integer> fileNameRank) {
+        fileNameRank.entrySet().stream()
+                .sorted(Map.Entry.comparingByValue())
+                .limit(10)
+                .forEach(entry -> System.out.println(entry.getKey() + " : " + entry.getValue() + "%"));
+    }
+
+    private static int rankAlgorythm(int foundedWord, int allWordsToFind) {
+        return (int) ((foundedWord * 100.0f) / allWordsToFind);
+    }
+
+    /*@FunctionalInterface
+    public interface ThrowingConsumer<T, E extends Exception> {
+        void accept(T t) throws E;
+    }
+
+    static <T> Consumer<T> throwingConsumerWrapper(ThrowingConsumer<T, Exception> throwingConsumer) {
+        return i -> {
             try {
-                throwingConsumer.apply(element);
+                throwingConsumer.accept(i);
             } catch (Exception ex) {
                 throw new RuntimeException(ex);
             }
         };
-    }
-
-    static String writeToCache(Path path) throws IOException {
-        return new String(Files.readAllBytes(path));
-    }
-
-    private static Map<String, String> getFilesWithContents(File folder) {
-        Map<String, String> filesWithContent = new HashMap<>();
-
-        try (Stream<Path> paths = Files.walk(Paths.get(folder.getPath()))) {
-            filesWithContent = paths.filter(Files::isRegularFile)
-                    .collect(Collectors.toMap(
-                            //TODO ogarnac obsluge bledu
-                            Path::toFile,
-                            throwingConsumerWrapper(path -> writeToCache((Path) path))
-                    ));
-
-        } catch (IOException e) {
-            //TODO obsluga bledu
-            e.printStackTrace();
-        }
-
-
-    }
-
+    }*/
 
 }
