@@ -1,6 +1,6 @@
 package Schibsted.algorythm;
 
-import Schibsted.Utils;
+import Schibsted.util.Utils;
 
 import java.io.File;
 import java.util.HashMap;
