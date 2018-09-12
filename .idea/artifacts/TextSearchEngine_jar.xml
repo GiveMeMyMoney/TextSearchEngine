@@ -1,0 +1,13 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="TextSearchEngine:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/TextSearchEngine_jar</output-path>
+    <root id="archive" name="TextSearchEngine.jar">
+      <element id="module-output" name="TextSearchEngine" />
+      <element id="module-test-output" name="TextSearchEngine" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/MOCK/objenesis-tck-2.6.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/MOCK/easymock-3.6/easymock-3.6.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$APPLICATION_HOME_DIR$/plugins/junit/lib/junit-jupiter-api-5.0.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$APPLICATION_HOME_DIR$/plugins/junit/lib/opentest4j-1.0.0.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
