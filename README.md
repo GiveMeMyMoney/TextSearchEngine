@@ -7,13 +7,13 @@ The rank score for file:
 * Is 0% if it contains none of the words
 * It is between 0 and 100% if it contains only some of the words depending on used algorythm.   
 
-The program use Template Method design pattern, so you can design your own algoryth using abstract class: FileSearchAlgorythmTemplate.java without changes in Main class.
+(The program use Template Method design pattern, so you can design your own algorythm using abstract class: FileSearchAlgorythmTemplate.java without changes in Main class).
 
-The algorithm recognizes words as non special characters and numbers. It is not resistant to differences in the size of letters so:
+The algorithm recognizes words as non special characters and numbers. It is case-sensitive so:
 "AlA" is not equals "Ala".
 
-Project contains JUnit tests.
-Search depth for the folder is set to 1.
+Project contains JUnit tests.   
+Search depth for the folder is set to 1.   
 
 ## HOW TO START
 Using .jar file which is located in /RUN folder.
@@ -37,7 +37,9 @@ search>:quit
 ```
 
 ## DOWNLOAD A PROJECT
-You can download project from git.
-You can use given folder for testing purpose: /FOLDER.
+You can download project from git.   
+You can use given folder for testing purpose: /FOLDER.   
+
+### ENJOY!
 
 
